@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style1.css">
+    <title>Katerina1</title>
+  </head>
+  <body>
+    <heading>
+      <h1>KATERINA</h1>
+    </heading>
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+      <img class="image" src="/kato4.jpg" draggable="false">
+      <img class="image" src="/kato3.jpg" draggable="false">
+      <img class="image" src="/kato2.jpg" draggable="false">
+      <img class="image" src="/kato10.jpg" draggable="false">
+      <img class="image" src="/kato5.jpg" draggable="false">
+      <img class="image" src="/kato8.jpg" draggable="false">
+      <img class="image" src="/kato12.jpg" draggable="false">
+    </div>
+    <script>
+      const track = document.getElementById("image-track");
+
+      let isDragging = false;
+      let startX = 0;
+      let currentPercentage = 0;
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      window.onmousedown = (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        track.style.transition = "none"; // Disable smooth transition while dragging
+      };
+
+      window.onmouseup = () => {
+        isDragging = false;
+        track.dataset.prevPercentage = currentPercentage;
+        track.style.transition = "transform 0.5s ease-out"; // Add smooth transition after drag
+      };
+
+      window.onmousemove = (e) => {
+        if (!isDragging) return;
+
+        const delta = e.clientX - startX;
+        const maxDelta = window.innerWidth / 2;
+        const percentageDelta = (delta / maxDelta) * 100;
+
+        currentPercentage = clamp(
+          parseFloat(track.dataset.prevPercentage || "0") + percentageDelta,
+          -100,
+          0
+        );
+
+        track.style.transform = `translate(${currentPercentage}%, -50%)`;
+
+        // Adjust object position for a parallax effect
+        for (const image of track.getElementsByClassName("image")) {
+          image.style.objectPosition = `${100 + currentPercentage}% center`;
+        }
+      };
+    </script>
+  </body>
+</html>
